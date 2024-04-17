@@ -32,10 +32,7 @@ class MainViewModel @Inject constructor(
               startDestination = Route.AppStartNavigation.route
           }
           delay(300)
-          Log.d("test", ": here1")
           splash=false
-          Log.d("test", ": here2")
-          Log.d("test", ": $startDestination")
       }.launchIn(viewModelScope)
     }
 }
