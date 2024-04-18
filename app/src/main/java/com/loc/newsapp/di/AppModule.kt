@@ -2,14 +2,23 @@ package com.loc.newsapp.di
 
 import android.app.Application
 import com.loc.newsapp.data.manger.LocalUserMangerImpl
+import com.loc.newsapp.data.remote.NewsApi
+import com.loc.newsapp.data.repo.NewsRepoImpl
 import com.loc.newsapp.domain.manger.LocalUserManger
+import com.loc.newsapp.domain.repo.NewsRepo
 import com.loc.newsapp.domain.usecases.appEntry.AppEntryUseCases
 import com.loc.newsapp.domain.usecases.appEntry.ReadAppEntry
 import com.loc.newsapp.domain.usecases.appEntry.SaveAppEntry
+import com.loc.newsapp.domain.usecases.news.GetNews
+import com.loc.newsapp.domain.usecases.news.NewsUseCases
+import com.loc.newsapp.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -29,4 +38,27 @@ object AppModule {
         readAppEntry = ReadAppEntry(localUserManger),
         saveAppEntry = SaveAppEntry(localUserManger)
     )
+    @Provides
+    @Singleton
+    fun provideNewsApi():NewsApi{
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NewsApi::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideNewsRepo(
+        newsApi: NewsApi
+    ):NewsRepo= NewsRepoImpl(newsApi)
+    @Provides
+    @Singleton
+    fun provideNewsUseCases(
+        newsRepo: NewsRepo
+    ):NewsUseCases{
+        return NewsUseCases(
+            getNews = GetNews(newsRepo)
+        )
+    }
 }

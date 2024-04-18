@@ -7,4 +7,5 @@ object Dimens {
     val MediumPadding2 = 30.dp
     val IndicatorSize = 14.dp
     val IndicatorWidth = 52.dp
+    val CardSize = 96.dp
 }
