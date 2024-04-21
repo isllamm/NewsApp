@@ -8,4 +8,9 @@ object Dimens {
     val IndicatorSize = 14.dp
     val IndicatorWidth = 52.dp
     val CardSize = 96.dp
+    val ExtraSmallPadding = 3.dp
+    val ExtraSmallPadding2 = 6.dp
+    val SmallIconSize = 11.dp
+    val IconSize = 20.dp
+
 }

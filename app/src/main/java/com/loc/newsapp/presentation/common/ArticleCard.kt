@@ -28,61 +28,65 @@ import coil.request.ImageRequest
 import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Article
 import com.loc.newsapp.presentation.Dimens.CardSize
+import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding
+import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding2
+import com.loc.newsapp.presentation.Dimens.SmallIconSize
 
 @Composable
 fun ArticleCard(
     modifier: Modifier = Modifier,
     article: Article,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null
 ) {
+
     val context = LocalContext.current
-    Row(modifier = modifier.clickable { onClick() }) {
+    Row(
+        modifier = modifier.clickable { onClick?.invoke() },
+
+        ) {
         AsyncImage(
             modifier = Modifier
                 .size(CardSize)
                 .clip(MaterialTheme.shapes.medium),
-            contentScale = ContentScale.Crop,
             model = ImageRequest.Builder(context).data(article.urlToImage).build(),
-            contentDescription = null
+            contentDescription = null,
+            contentScale = ContentScale.Crop
         )
         Column(
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
-                .padding(horizontal = 3.dp)
+                .padding(horizontal = ExtraSmallPadding)
                 .height(CardSize)
         ) {
             Text(
                 text = article.title,
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(
-                    id = R.color.text_title
-                ),
+                style = MaterialTheme.typography.bodyMedium.copy(),
+                color = colorResource(id = R.color.text_title),
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = article.source.name,
-                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                color = colorResource(
-                    id = R.color.body
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = article.source.name,
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    color = colorResource(id = R.color.body)
                 )
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Icon(
-                painter = painterResource(id = R.drawable.ic_time), contentDescription = null,
-                modifier = Modifier.size(11.dp),
-                tint = colorResource(id = R.color.body)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = article.publishedAt,
-                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                color = colorResource(
-                    id = R.color.body
+                Spacer(modifier = Modifier.width(ExtraSmallPadding2))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_time),
+                    contentDescription = null,
+                    modifier = Modifier.size(SmallIconSize),
+                    tint = colorResource(id = R.color.body)
                 )
-            )
+                Spacer(modifier = Modifier.width(ExtraSmallPadding))
+                Text(
+                    text = article.publishedAt,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = colorResource(id = R.color.body)
+                )
+            }
         }
     }
 }
