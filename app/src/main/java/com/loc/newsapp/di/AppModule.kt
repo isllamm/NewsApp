@@ -13,9 +13,12 @@ import com.loc.newsapp.domain.repo.NewsRepo
 import com.loc.newsapp.domain.usecases.appEntry.AppEntryUseCases
 import com.loc.newsapp.domain.usecases.appEntry.ReadAppEntry
 import com.loc.newsapp.domain.usecases.appEntry.SaveAppEntry
+import com.loc.newsapp.domain.usecases.news.DeleteArticle
 import com.loc.newsapp.domain.usecases.news.GetNews
 import com.loc.newsapp.domain.usecases.news.NewsUseCases
 import com.loc.newsapp.domain.usecases.news.SearchNews
+import com.loc.newsapp.domain.usecases.news.SelectArticles
+import com.loc.newsapp.domain.usecases.news.UpsertArticle
 import com.loc.newsapp.util.Constants
 import com.loc.newsapp.util.Constants.BASE_URL
 import dagger.Module
@@ -24,7 +27,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -61,11 +63,15 @@ object AppModule {
     @Provides
     @Singleton
     fun provideNewsUseCases(
-        newsRepo: NewsRepo
+        newsRepo: NewsRepo,
+        newsDao: NewsDao
     ):NewsUseCases{
         return NewsUseCases(
             getNews = GetNews(newsRepo),
-            searchNews = SearchNews(newsRepo)
+            searchNews = SearchNews(newsRepo),
+            upsertArticle = UpsertArticle(newsDao),
+            deleteArticle = DeleteArticle(newsDao),
+            selectArticles = SelectArticles(newsDao),
         )
     }
     @Provides
