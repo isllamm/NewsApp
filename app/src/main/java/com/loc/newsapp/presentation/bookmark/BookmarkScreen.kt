@@ -28,6 +28,7 @@ fun BookmarkScreen(
             .statusBarsPadding()
             .padding(top = MediumPadding1, start = MediumPadding1, end = MediumPadding1)
     ) {
+
         Text(
             text = "Bookmark",
             style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
@@ -35,7 +36,9 @@ fun BookmarkScreen(
                 id = R.color.text_title
             )
         )
+
         Spacer(modifier = Modifier.height(MediumPadding1))
+
         ArticlesList(
             articles = state.articles,
             onClick = navigateToDetails

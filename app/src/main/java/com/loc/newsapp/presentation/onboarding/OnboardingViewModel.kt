@@ -2,26 +2,28 @@ package com.loc.newsapp.presentation.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.loc.newsapp.domain.usecases.appEntry.AppEntryUseCases
+import com.loc.newsapp.domain.usecases.appEntry.SaveAppEntry
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(
-    private val appEntryUseCases: AppEntryUseCases
-):ViewModel() {
-    fun onEvent(event:OnboardingEvent){
+class OnBoardingViewModel @Inject constructor(
+    private val saveAppEntry: SaveAppEntry
+) : ViewModel() {
+
+    fun onEvent(event: OnboardingEvent){
         when(event){
-            is OnboardingEvent.SaveAppEntry->{
-                saveAppEntry()
+            is OnboardingEvent.SaveAppEntry ->{
+                saveUserEntry()
             }
         }
     }
 
-    private fun saveAppEntry() {
+    private fun saveUserEntry() {
         viewModelScope.launch {
-            appEntryUseCases.saveAppEntry()
+            saveAppEntry()
         }
     }
+
 }

@@ -4,22 +4,8 @@ import android.app.Application
 import androidx.room.Room
 import com.loc.newsapp.data.local.NewsDao
 import com.loc.newsapp.data.local.NewsDatabase
-import com.loc.newsapp.data.local.NewsTypeConverter
-import com.loc.newsapp.data.manger.LocalUserMangerImpl
+import com.loc.newsapp.data.local.NewsTypeConvertor
 import com.loc.newsapp.data.remote.NewsApi
-import com.loc.newsapp.data.repo.NewsRepoImpl
-import com.loc.newsapp.domain.manger.LocalUserManger
-import com.loc.newsapp.domain.repo.NewsRepo
-import com.loc.newsapp.domain.usecases.appEntry.AppEntryUseCases
-import com.loc.newsapp.domain.usecases.appEntry.ReadAppEntry
-import com.loc.newsapp.domain.usecases.appEntry.SaveAppEntry
-import com.loc.newsapp.domain.usecases.news.DeleteArticle
-import com.loc.newsapp.domain.usecases.news.GetNews
-import com.loc.newsapp.domain.usecases.news.NewsUseCases
-import com.loc.newsapp.domain.usecases.news.SearchNews
-import com.loc.newsapp.domain.usecases.news.SelectArticles
-import com.loc.newsapp.domain.usecases.news.UpsertArticle
-import com.loc.newsapp.util.Constants
 import com.loc.newsapp.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -32,64 +18,37 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideLocalUserManger(
-        application: Application
-    ): LocalUserManger = LocalUserMangerImpl(application)
+
 
     @Provides
     @Singleton
-    fun provideAppEntryUseCases(
-        localUserManger: LocalUserManger
-    ) = AppEntryUseCases(
-        readAppEntry = ReadAppEntry(localUserManger),
-        saveAppEntry = SaveAppEntry(localUserManger)
-    )
-    @Provides
-    @Singleton
-    fun provideNewsApi():NewsApi{
-        return Retrofit.Builder()
+    fun provideApiInstance(): NewsApi {
+        return Retrofit
+            .Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(NewsApi::class.java)
     }
-    @Provides
-    @Singleton
-    fun provideNewsRepo(
-        newsApi: NewsApi
-    ):NewsRepo= NewsRepoImpl(newsApi)
-    @Provides
-    @Singleton
-    fun provideNewsUseCases(
-        newsRepo: NewsRepo,
-        newsDao: NewsDao
-    ):NewsUseCases{
-        return NewsUseCases(
-            getNews = GetNews(newsRepo),
-            searchNews = SearchNews(newsRepo),
-            upsertArticle = UpsertArticle(newsDao),
-            deleteArticle = DeleteArticle(newsDao),
-            selectArticles = SelectArticles(newsDao),
-        )
-    }
+
     @Provides
     @Singleton
     fun provideNewsDatabase(
         application: Application
-    ):NewsDatabase{
+    ): NewsDatabase {
         return Room.databaseBuilder(
             context = application,
             klass = NewsDatabase::class.java,
-            name = Constants.NEWS_DB,
-        ).addTypeConverter(NewsTypeConverter())
+            name = "news_db"
+        ).addTypeConverter(NewsTypeConvertor())
             .fallbackToDestructiveMigration()
             .build()
     }
+
     @Provides
     @Singleton
     fun provideNewsDao(
         newsDatabase: NewsDatabase
-    ):NewsDao = newsDatabase.newsDao
+    ): NewsDao = newsDatabase.newsDao
+
 }

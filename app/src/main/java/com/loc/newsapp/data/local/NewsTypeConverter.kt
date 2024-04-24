@@ -1,19 +1,21 @@
 package com.loc.newsapp.data.local
 
 import androidx.room.ProvidedTypeConverter
-import androidx.room.TypeConverters
+import androidx.room.TypeConverter
 import com.loc.newsapp.domain.model.Source
 
 @ProvidedTypeConverter
-class NewsTypeConverter {
-    @TypeConverters
+class NewsTypeConvertor {
+
+    @TypeConverter
     fun sourceToString(source: Source): String{
         return "${source.id},${source.name}"
     }
-    @TypeConverters
+
+    @TypeConverter
     fun stringToSource(source: String): Source{
-        return source.split(",").let{strings ->
-            Source(strings[0], strings[1])
+        return source.split(',').let { sourceArray ->
+            Source(id = sourceArray[0], name = sourceArray[1])
         }
     }
 }

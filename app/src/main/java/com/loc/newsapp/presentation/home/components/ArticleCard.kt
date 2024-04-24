@@ -1,4 +1,4 @@
-package com.loc.newsapp.presentation.common
+package com.loc.newsapp.presentation.home.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,15 +22,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.loc.newsapp.R
 import com.loc.newsapp.domain.model.Article
-import com.loc.newsapp.presentation.Dimens.CardSize
+import com.loc.newsapp.presentation.Dimens.ArticleCardSize
 import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding
 import com.loc.newsapp.presentation.Dimens.ExtraSmallPadding2
 import com.loc.newsapp.presentation.Dimens.SmallIconSize
+
 
 @Composable
 fun ArticleCard(
@@ -46,7 +46,7 @@ fun ArticleCard(
         ) {
         AsyncImage(
             modifier = Modifier
-                .size(CardSize)
+                .size(ArticleCardSize)
                 .clip(MaterialTheme.shapes.medium),
             model = ImageRequest.Builder(context).data(article.urlToImage).build(),
             contentDescription = null,
@@ -56,7 +56,7 @@ fun ArticleCard(
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .padding(horizontal = ExtraSmallPadding)
-                .height(CardSize)
+                .height(ArticleCardSize)
         ) {
             Text(
                 text = article.title,
@@ -90,3 +90,4 @@ fun ArticleCard(
         }
     }
 }
+

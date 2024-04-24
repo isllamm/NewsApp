@@ -4,11 +4,15 @@ import androidx.paging.PagingData
 import com.loc.newsapp.domain.model.Article
 import com.loc.newsapp.domain.repo.NewsRepo
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class SearchNews(
-    private val newsRepo: NewsRepo,
+class SearchNews @Inject constructor(
+    private val newsRepository: NewsRepo
 ) {
     operator fun invoke(searchQuery: String, sources: List<String>): Flow<PagingData<Article>> {
-        return newsRepo.searchNews(searchQuery = searchQuery, sources = sources)
+        return newsRepository.searchNews(
+            searchQuery = searchQuery,
+            sources = sources
+        )
     }
 }

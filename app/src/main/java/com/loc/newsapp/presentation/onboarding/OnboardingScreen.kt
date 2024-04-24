@@ -18,24 +18,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.loc.newsapp.presentation.Dimens.IndicatorWidth
+import androidx.compose.ui.unit.dp
 import com.loc.newsapp.presentation.Dimens.MediumPadding2
 import com.loc.newsapp.presentation.common.NewsButton
 import com.loc.newsapp.presentation.common.NewsTextButton
-import com.loc.newsapp.presentation.onboarding.components.OnboardingPage
-import com.loc.newsapp.presentation.onboarding.components.PageIndicator
+import com.loc.newsapp.presentation.onboarding.components.OnBoardingPage
+import com.loc.newsapp.presentation.onboarding.components.PagerIndicator
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OnboardingScreen(
-    event: (OnboardingEvent)->Unit
+fun OnBoardingScreen(
+    onEvent: (OnboardingEvent) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = 0) {
             pages.size
         }
-        val buttonState = remember {
+        val buttonsState = remember {
             derivedStateOf {
                 when (pagerState.currentPage) {
                     0 -> listOf("", "Next")
@@ -46,7 +46,7 @@ fun OnboardingScreen(
             }
         }
         HorizontalPager(state = pagerState) { index ->
-            OnboardingPage(page = pages[index])
+            OnBoardingPage(page = pages[index])
         }
         Spacer(modifier = Modifier.weight(1f))
         Row(
@@ -57,31 +57,42 @@ fun OnboardingScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PageIndicator(
-                modifier = Modifier.width(IndicatorWidth),
-                pageSize = pages.size,
+            PagerIndicator(
+                modifier = Modifier.width(52.dp),
+                pagesSize = pages.size,
                 selectedPage = pagerState.currentPage
             )
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val scope = rememberCoroutineScope()
-                if (buttonState.value[0].isNotEmpty()) {
-                    NewsTextButton(text = buttonState.value[0], onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(page = pagerState.currentPage - 1)
+                //Hide the button when the first element of the list is empty
+                if (buttonsState.value[0].isNotEmpty()) {
+                    NewsTextButton(
+                        text = buttonsState.value[0],
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(
+                                    page = pagerState.currentPage - 1
+                                )
+                            }
+
                         }
-                    })
+                    )
                 }
-                NewsButton(text = buttonState.value[1], onClick = {
-                    scope.launch {
-                        if (pagerState.currentPage == 2) {
-                            event(OnboardingEvent.SaveAppEntry)
-                        } else {
-                            pagerState.animateScrollToPage(
-                                page = pagerState.currentPage + 1
-                            )
+                NewsButton(
+                    text = buttonsState.value[1],
+                    onClick = {
+                        scope.launch {
+                            if (pagerState.currentPage == 2) {
+                                onEvent(OnboardingEvent.SaveAppEntry)
+                            } else {
+                                pagerState.animateScrollToPage(
+                                    page = pagerState.currentPage + 1
+                                )
+                            }
                         }
                     }
-                })
+                )
             }
         }
         Spacer(modifier = Modifier.weight(0.5f))

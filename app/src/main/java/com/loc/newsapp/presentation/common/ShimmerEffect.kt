@@ -1,12 +1,10 @@
 package com.loc.newsapp.presentation.common
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,44 +19,48 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.loc.newsapp.R
 import com.loc.newsapp.presentation.Dimens
 import com.loc.newsapp.presentation.Dimens.MediumPadding1
-import com.loc.newsapp.ui.theme.NewsAppTheme
 
-@SuppressLint("ModifierFactoryUnreferencedReceiver")
-fun Modifier.shimmerEffect() = composed {
-    val transition = rememberInfiniteTransition(label = "")
+fun Modifier.shimmerEffect(cornerRadius: CornerRadius = CornerRadius(x = 12f, y = 12f)) = composed {
+    val transition = rememberInfiniteTransition(label = "shimmer effect")
     val alpha = transition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.9f,
-        animationSpec = infiniteRepeatable(
+        initialValue = 0.2f, targetValue = 0.9f, animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1000),
             repeatMode = RepeatMode.Reverse
-        ), label = ""
+        ),
+        label = "transparency of the background color"
     ).value
-    background(color = colorResource(id = R.color.shimmer).copy(alpha))
+    val color = colorResource(id = R.color.shimmer).copy(alpha = alpha)
+    drawBehind {
+        drawRoundRect(
+            color = color,
+            cornerRadius = cornerRadius
+        )
+    }
 }
 
 @Composable
-fun CardShimmerEffect(
-    modifier: Modifier=Modifier
-) {
-    Row(modifier = modifier) {
+fun ArticleCardShimmerEffect(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+    ) {
         Box(
             modifier = Modifier
-                .size(Dimens.CardSize)
+                .size(Dimens.ArticleCardSize)
                 .clip(MaterialTheme.shapes.medium)
-                .shimmerEffect(),
+                .shimmerEffect()
         )
         Column(
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
-                .padding(horizontal = 3.dp)
-                .height(Dimens.CardSize)
+                .padding(horizontal = Dimens.ExtraSmallPadding)
+                .height(Dimens.ArticleCardSize)
         ) {
             Box(
                 modifier = Modifier
@@ -66,27 +68,19 @@ fun CardShimmerEffect(
                     .height(30.dp)
                     .padding(horizontal = MediumPadding1)
                     .shimmerEffect()
-
             )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(horizontal = MediumPadding1)
+                        .height(15.dp)
+                        .shimmerEffect()
+                )
+
+            }
         }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .height(15.dp)
-                    .padding(horizontal = MediumPadding1)
-                    .shimmerEffect()
-
-            )
-        }
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CardPreview() {
-    NewsAppTheme {
-        CardShimmerEffect()
     }
 }
